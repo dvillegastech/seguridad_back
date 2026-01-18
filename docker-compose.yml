@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: seguridad
+      POSTGRES_USER: seguridad
+      POSTGRES_PASSWORD: seguridad
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build: .
+    environment:
+      DATABASE_URL: postgresql+psycopg2://seguridad:seguridad@db:5432/seguridad
+      APNS_TOPIC: ""
+      APNS_TEAM_ID: ""
+      APNS_KEY_ID: ""
+      APNS_AUTH_KEY: ""
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    volumes:
+      - ./app:/app/app
+
+volumes:
+  pgdata:
